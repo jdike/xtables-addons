@@ -222,7 +222,11 @@ static void tarpit_tcp(struct sk_buff *oldskb, unsigned int hook,
 #endif
 		addr_type = RTN_LOCAL;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,78)	
+	if (ip_route_me_harder(&nskb, nskb->sk, addr_type))
+#else
 	if (ip_route_me_harder(&nskb, addr_type))
+#endif	  
 		goto free_nskb;
 	else
 		niph = ip_hdr(nskb);
